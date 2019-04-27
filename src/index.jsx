@@ -31,7 +31,7 @@ const Root = () => {
 
   return (
     <Router>
-      <Helmet defaultTitle="Riffy N" titleTemplate="%s · Riffy N">
+      <Helmet defaultTitle="IVAOTH RFE" titleTemplate="%s · IVAOTH RFE">
         <style>
           {`body {
               background-color: #f0f2f5;
