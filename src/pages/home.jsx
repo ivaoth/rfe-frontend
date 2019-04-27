@@ -42,7 +42,7 @@ const Home = props => {
           ) : (
             <Row>
               {raw.map(event => (
-                <Col span={6} key={`card-event-${event.id}`}>
+                <Col xs={{span: 24}} sm={{span: 12}} md={{span: 8}} lg={{span: 6}} key={`card-event-${event.id}`}>
                   <Link to={`/event/${event.id}`}>
                     <Card cover={<img alt={event.name} src={event.cover} />}>
                       <Meta title={event.name} description={event.desc} />
