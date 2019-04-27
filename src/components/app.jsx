@@ -21,10 +21,10 @@ const App = props => {
         <Row style={{marginTop: '60px', marginBottom: '5px'}} type="flex" justify="space-between" align="bottom">
           <Col span={22}>
             <Title style={{fontSize: '38px', fontWeight: '700', marginBottom: '0px', display: 'inline-block'}}>
-              IVAOTH RFE
+              IVAO TH
             </Title>
             <Title level={3} style={{display: 'inline', color: 'rgba(0, 0, 0, 0.45)'}}>
-              init
+              RFE
             </Title>
           </Col>
           <appContext.Provider value={dispatch}>
