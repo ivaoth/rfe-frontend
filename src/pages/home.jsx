@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 
-import {Axios, Loading, Link} from '../bridge'
+import {Axios, Loading, Link, appContext} from '../bridge'
 
 import {Row, Col, Card, Typography} from 'antd'
 
@@ -12,8 +12,11 @@ const Home = props => {
   const [error, setError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  const dispatch = useContext(appContext)
+
   useEffect(() => {
     // TODO: Fetch avaliable events and put into raw
+    dispatch({type: 'setSubMenu', subMenu: 'events'})
     try {
       setRaw([
         {
@@ -28,7 +31,7 @@ const Home = props => {
       setError(true)
       setIsLoading(false)
     }
-  }, [])
+  }, [dispatch])
 
   return (
     <>

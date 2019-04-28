@@ -41,7 +41,7 @@ const Strip = props => {
 
     // TODO: Book flight by using API
     try {
-      await message.loading('Booking flight...')
+      await message.loading('Reserving flight...')
       message.success('Flight booked')
       setRaw(prev => ({...prev, reserved: true}))
       setShowModal(false)
@@ -92,7 +92,7 @@ const Strip = props => {
                   <Text strong>Aircraft</Text>
                 </Col>
                 <Col span={16}>
-                  <Text>{raw.aircraft}</Text>
+                  <Text>{raw.type}</Text>
                 </Col>
               </Row>
               <Row key={`${flightID}-meta-departure`}>
@@ -106,18 +106,18 @@ const Strip = props => {
             </Row>
             <Row key={`${flightID}-action`}>
               <Button block onClick={() => setShowModal(true)} disabled={raw.reserved}>
-                {raw.reserved ? 'Reserved' : 'Book'}
+                {raw.reserved ? 'Reserved' : 'Reserve'}
               </Button>
             </Row>
 
             <Modal
-              title={`Booking flight ${raw.flight}`}
+              title={`Reserving flight ${raw.flight}`}
               visible={showModal}
               confirmLoading={isBooking}
               onOk={() => bookflight()}
               onCancel={() => setShowModal(false)}>
               <Row>
-                <Col span={24}>You are going to book the following flight</Col>
+                <Col span={24}>You are going to reserve the following flight</Col>
               </Row>
               <Row style={{margin: '10px 0'}}>
                 <Card span={24}>
