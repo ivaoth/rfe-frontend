@@ -59,8 +59,13 @@ const Strip = props => {
       fetchFlight()
       setShowModal(false)
       setIsBooking(false)
-    } catch {
-      message.error('Unable to reserve this flight')
+    } catch (err) {
+      if (err.data.code === 701) {
+        message.warning('You already reserved flight for this event')
+      } else {
+        message.error('Unable to reserve this flight')
+      }
+
       fetchFlight()
       setShowModal(false)
       setIsBooking(false)
@@ -136,7 +141,7 @@ const Strip = props => {
               title={`Reserving flight ${raw.flight}`}
               visible={showModal}
               confirmLoading={isBooking}
-              onOk={() => bookflight('IVAOTOKEN')}
+              onOk={() => bookflight(store.token)}
               onCancel={() => setShowModal(false)}>
               <Row>
                 <Col span={24}>You are going to reserve the following flight</Col>
