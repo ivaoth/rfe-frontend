@@ -4,7 +4,7 @@ import {Row, Col, Card, Typography} from 'antd'
 
 const {Title} = Typography
 
-const Error = props => {
+const NotFound = props => {
   return (
     <Row>
       <Col xs={{span: 20, offset: 2}} sm={{span: 16, offset: 4}} md={{span: 12, offset: 6}} lg={{span: 8, offset: 8}}>
@@ -17,4 +17,4 @@ const Error = props => {
   )
 }
 
-export default Error
+export default NotFound

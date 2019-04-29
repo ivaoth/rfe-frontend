@@ -21,8 +21,13 @@ const Event = Loadable({
   loading: Loading,
 })
 
-const Error = Loadable({
-  loader: () => import('./pages/error' /* webpackChunkName: "error" */),
+const NotFound = Loadable({
+  loader: () => import('./pages/404' /* webpackChunkName: "notfound" */),
+  loading: Loading,
+})
+
+const Auth = Loadable({
+  loader: () => import('./pages/auth' /* webpackChunkName: "auth" */),
   loading: Loading,
 })
 
@@ -40,28 +45,32 @@ const Root = () => {
       </Helmet>
       <appContext.Provider value={dispatch}>
         <App store={state}>
-          <Switch>
-            <Route
-              exact
-              path="/"
-              render={() => (
-                <appContext.Provider key={0} value={dispatch}>
-                  <Home store={state} />
-                </appContext.Provider>
-              )}
-            />
+          {state.authState === 1 ? (
+            <Switch>
+              <Route
+                exact
+                path="/"
+                render={() => (
+                  <appContext.Provider key={0} value={dispatch}>
+                    <Home store={state} />
+                  </appContext.Provider>
+                )}
+              />
 
-            <Route
-              path="/event/:id"
-              render={() => (
-                <appContext.Provider key={1} value={dispatch}>
-                  <Event store={state} />
-                </appContext.Provider>
-              )}
-            />
+              <Route
+                path="/event/:id"
+                render={() => (
+                  <appContext.Provider key={1} value={dispatch}>
+                    <Event store={state} />
+                  </appContext.Provider>
+                )}
+              />
 
-            <Route exact component={Error} />
-          </Switch>
+              <Route exact component={NotFound} />
+            </Switch>
+          ) : (
+            <Auth store={state} />
+          )}
         </App>
       </appContext.Provider>
     </Router>
