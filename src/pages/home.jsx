@@ -1,4 +1,5 @@
 import React, {useEffect, useState, useContext} from 'react'
+import PropTypes from 'prop-types'
 
 import {Axios, Loading, Link, appContext} from '../bridge'
 
@@ -12,26 +13,24 @@ const Home = props => {
   const [error, setError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  const {store} = props
+
   const dispatch = useContext(appContext)
 
   useEffect(() => {
-    // TODO: Fetch avaliable events and put into raw
-    dispatch({type: 'setSubMenu', subMenu: 'events'})
-    try {
-      setRaw([
-        {
-          id: 'someid',
-          name: '1st Bangkok RFE',
-          desc: 'Description such wow',
-          cover: 'https://storage.th.ivao.aero/EVENTS/IVAO_BKK-RFE-2019.jpg',
-        },
-      ])
-      setIsLoading(false)
-    } catch {
-      setError(true)
-      setIsLoading(false)
-    }
-  }, [dispatch])
+    ;(async () => {
+      dispatch({type: 'setSubMenu', subMenu: 'events'})
+
+      try {
+        const out = await Axios.get(`${store.apiEndpoint}/api/v1/event/list`)
+        setRaw(out.data.response.data.events)
+        setIsLoading(false)
+      } catch {
+        setError(true)
+        setIsLoading(false)
+      }
+    })()
+  }, [dispatch, store.apiEndpoint])
 
   return (
     <>
@@ -62,3 +61,7 @@ const Home = props => {
 }
 
 export default Home
+
+Home.propTypes = {
+  store: PropTypes.object,
+}

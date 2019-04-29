@@ -1,9 +1,7 @@
-import _ from 'lodash'
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 import PropTypes from 'prop-types'
 
-import {Axios, Link} from '../bridge'
-import {mockupFlight} from '../assets/flights'
+import {Axios} from '../bridge'
 
 import {Row, Col, Card, Typography, Icon, Button, Skeleton, Modal, message} from 'antd'
 
@@ -16,40 +14,63 @@ const Strip = props => {
   const [showModal, setShowModal] = useState(false)
   const [isBooking, setIsBooking] = useState(false)
 
+  const {store} = props
+
   const eventID = props.eventID
   const flightID = props.flightID
 
-  useEffect(() => {
-    if (raw === null) {
-      // TODO: Get flight from API and set into raw
-      try {
-        setRaw(_.sample(mockupFlight))
-        setRaw(prev => ({...prev, reserved: Math.random() >= 0.5}))
+  const fetchFlight = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const out = await Axios.get(`${store.apiEndpoint}/api/v1/flight/get/${eventID}/${flightID}`)
 
-        setError(false)
-        setIsLoading(false)
-      } catch (err) {
-        console.log(err)
-        setError(true)
-        setIsLoading(false)
-      }
+      setRaw(out.data.response.data.flight)
+
+      setError(false)
+      setIsLoading(false)
+    } catch (err) {
+      console.log(err)
+      setError(true)
+      setIsLoading(false)
     }
-  }, [props, raw])
+  }, [eventID, flightID, store.apiEndpoint])
 
-  const bookflight = async () => {
+  const bookflight = async token => {
     setIsBooking(true)
 
-    // TODO: Book flight by using API
     try {
-      await message.loading('Reserving flight...')
+      message.loading('Reserving flight...')
+
+      const payload = {
+        event: {
+          id: eventID,
+        },
+        flight: {
+          id: flightID,
+          reserver: {
+            token: token,
+          },
+        },
+      }
+
+      await Axios.post(`${store.apiEndpoint}/api/v1/flight/reserve`, payload)
+
       message.success('Flight booked')
       setRaw(prev => ({...prev, reserved: true}))
       setShowModal(false)
     } catch {
-      message.error('Unable to book this flight')
+      message.error('Unable to reserve this flight')
+      fetchFlight()
+      setShowModal(false)
       setIsBooking(false)
     }
   }
+
+  useEffect(() => {
+    if (raw === null) {
+      fetchFlight()
+    }
+  }, [fetchFlight, raw])
 
   return (
     <Col xs={{span: 24}} sm={{span: 12}} md={{span: 8}} lg={{span: 6}} style={{margin: '5px 0'}}>
@@ -106,7 +127,7 @@ const Strip = props => {
             </Row>
             <Row key={`${flightID}-action`}>
               <Button block onClick={() => setShowModal(true)} disabled={raw.reserved}>
-                {raw.reserved ? 'Reserved' : 'Reserve'}
+                {raw.reserver !== null ? `Reserved by ${raw.reserver.vid}` : 'Reserve'}
               </Button>
             </Row>
 
@@ -114,7 +135,7 @@ const Strip = props => {
               title={`Reserving flight ${raw.flight}`}
               visible={showModal}
               confirmLoading={isBooking}
-              onOk={() => bookflight()}
+              onOk={() => bookflight('IVAOTOKEN')}
               onCancel={() => setShowModal(false)}>
               <Row>
                 <Col span={24}>You are going to reserve the following flight</Col>
@@ -139,6 +160,7 @@ const Strip = props => {
 export default Strip
 
 Strip.propTypes = {
+  store: PropTypes.object,
   eventID: PropTypes.string,
   flightID: PropTypes.string,
 }

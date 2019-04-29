@@ -3,13 +3,14 @@ import PropTypes from 'prop-types'
 import {withRouter} from 'react-router'
 import InfiniteScroll from 'react-infinite-scroller'
 
-import {Loading, appContext} from '../bridge'
+import {Loading, appContext, Axios} from '../bridge'
 
 import Strip from '../components/strip'
 
-import {Row} from 'antd'
+import {Row, Empty} from 'antd'
 
 const Event = props => {
+  const {store} = props
   const eventID = props.match.params.id
 
   const [flights, setFlights] = useState([])
@@ -17,23 +18,15 @@ const Event = props => {
 
   const dispatch = useContext(appContext)
 
-  const loadMoreFlights = page => {
-    // TODO: Get flights ID from API with pagination and add into flights
-    const maxPage = 5
-    const flights = []
+  const loadMoreFlights = async page => {
+    const out = await Axios.get(`${store.apiEndpoint}/api/v1/flight/list/${eventID}/${page}`)
 
-    for (let i = 0; i < 30; i++) {
-      flights.push(
-        Math.random()
-          .toString(36)
-          .slice(2),
-      )
+    if (out.data.response.data.flights.length === 0) {
+      setMore(false)
+      return
     }
 
-    setFlights(prev => [...prev, ...flights])
-
-    if (page === maxPage) setMore(false)
-    else setMore(true)
+    setFlights(prev => [...prev, ...out.data.response.data.flights])
   }
 
   useEffect(() => {
@@ -41,13 +34,19 @@ const Event = props => {
   }, [dispatch])
 
   return (
-    <InfiniteScroll pageStart={0} loadMore={loadMoreFlights} hasMore={more} loader={<Loading key={`loading-bar`} />}>
-      <appContext.Provider value={dispatch}>
+    <InfiniteScroll
+      key={`${eventID}-list-scroller`}
+      pageStart={0}
+      loadMore={loadMoreFlights}
+      hasMore={more}
+      loader={<Loading key={`${eventID}-list-loader`} />}>
+      <appContext.Provider value={dispatch} key={`${eventID}-list-context`}>
         <Row gutter={16} type="flex" justify="space-around" align="middle" key="grid-row">
           {flights.map(flight => (
-            <Strip key={`${eventID}-strip-${flight}`} eventID={eventID} flightID={flight} />
+            <Strip key={`${eventID}-strip-${flight}`} eventID={eventID} flightID={flight} store={store} />
           ))}
         </Row>
+        {!more ? <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={`Reached the end`} /> : null}
       </appContext.Provider>
     </InfiniteScroll>
   )
@@ -56,6 +55,7 @@ const Event = props => {
 export default withRouter(Event)
 
 Event.propTypes = {
+  store: PropTypes.object,
   match: PropTypes.shape({
     params: PropTypes.object,
   }),
