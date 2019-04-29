@@ -60,7 +60,7 @@ const Strip = props => {
       setShowModal(false)
       setIsBooking(false)
     } catch (err) {
-      if (err.data.code === 701) {
+      if (err.response.data.code === 701) {
         message.warning('You already reserved flight for this event')
       } else {
         message.error('Unable to reserve this flight')
