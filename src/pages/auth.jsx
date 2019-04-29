@@ -22,8 +22,12 @@ const Auth = props => {
     if (store.authState === 2) {
       const params = qs.parse(props.location.search, {ignoreQueryPrefix: true})
       if (params.IVAOTOKEN) {
-        ls('token', params.IVAOTOKEN)
-        ls('tokenTime', moment())
+        const token = params.IVAOTOKEN
+        const time = moment()
+        ls('token', token)
+        ls('tokenTime', time)
+        dispatch({type: 'setToken', token})
+        dispatch({type: 'setTokenTime', time})
       }
 
       if (store.token === null) {
