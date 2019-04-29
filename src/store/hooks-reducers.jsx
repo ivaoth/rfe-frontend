@@ -1,7 +1,7 @@
 export const initState = {
   toggleMenu: false,
   subMenu: 'initializing',
-  apiEndpoint: 'http://rfe-api.th.ivao.aero',
+  apiEndpoint: 'https://rfe-api.th.ivao.aero',
 }
 
 export const reducers = (state, action) => {
