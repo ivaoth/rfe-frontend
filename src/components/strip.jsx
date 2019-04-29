@@ -127,8 +127,8 @@ const Strip = props => {
               </Row>
             </Row>
             <Row key={`${flightID}-action`}>
-              <Button block onClick={() => setShowModal(true)} disabled={raw.reserved}>
-                {raw.reserver !== null ? `Reserved by ${raw.reserver.vid}` : 'Reserve'}
+              <Button block onClick={() => setShowModal(true)} disabled={raw.reserver === null}>
+                {raw.reserver === null ? `Reserved by ${raw.reserver.vid}` : 'Reserve'}
               </Button>
             </Row>
 
