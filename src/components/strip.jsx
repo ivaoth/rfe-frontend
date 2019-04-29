@@ -56,8 +56,9 @@ const Strip = props => {
       await Axios.post(`${store.apiEndpoint}/api/v1/flight/reserve`, payload)
 
       message.success('Flight booked')
-      setRaw(prev => ({...prev, reserved: true}))
+      fetchFlight()
       setShowModal(false)
+      setIsBooking(false)
     } catch {
       message.error('Unable to reserve this flight')
       fetchFlight()
