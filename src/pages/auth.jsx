@@ -44,6 +44,7 @@ const Auth = props => {
         dispatch({type: 'setAuthState', authState: 6})
         ;(async () => {
           const out = await Axios.get(`${store.apiEndpoint}/api/v1/token/fetch/${store.token}`)
+
           if (out.data.response.data.token.result === 0) {
             // Rouge token
             dispatch({type: 'setAuthState', authState: 5})
@@ -52,6 +53,7 @@ const Auth = props => {
             dispatch({type: 'setToken', token: null})
             dispatch({type: 'setTokenTime', tokenTime: null})
           } else {
+            dispatch({type: 'setIdentity', identity: out.data.response.data.token})
             dispatch({type: 'setAuthState', authState: 1})
           }
         })()

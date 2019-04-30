@@ -3,7 +3,8 @@ import ls from 'local-storage'
 export const initState = {
   toggleMenu: false,
   subMenu: 'initializing',
-  apiEndpoint: 'https://rfe-api.th.ivao.aero',
+  apiEndpoint: 'http://localhost:3001',
+  identity: null,
   token: ls('token'),
   tokenTime: ls('tokenTime'),
   authState: 2,
@@ -11,6 +12,8 @@ export const initState = {
 
 export const reducers = (state, action) => {
   switch (action.type) {
+    case 'setIdentity':
+      return {...state, identity: action.identity}
     case 'setAuthState':
       return {...state, authState: action.authState}
     case 'setToken':

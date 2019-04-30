@@ -17,6 +17,10 @@ const Nav = props => {
       name: 'Home',
       url: '/',
     },
+    {
+      name: 'Wallet',
+      url: '/wallet',
+    },
   ]
 
   const toggleMenu = () => {
@@ -31,9 +35,14 @@ const Nav = props => {
       <Icon style={{fontSize: '24px', paddingBottom: 0, marginBottom: '5px'}} type="more" onClick={() => toggleMenu()} />
       <Drawer
         title={
-          <Title level={2} style={{marginBottom: 0}}>
-            Menu
-          </Title>
+          <>
+            <Title level={2} style={{marginBottom: 0}}>
+              Menu
+            </Title>
+            <Text>
+              {store.identity.firstname} - {store.identity.vid}
+            </Text>
+          </>
         }
         placement="left"
         closable={false}

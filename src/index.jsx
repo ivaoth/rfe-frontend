@@ -16,6 +16,11 @@ const Home = Loadable({
   loading: Loading,
 })
 
+const Wallet = Loadable({
+  loader: () => import('./pages/wallet' /* webpackChunkName: "wallet" */),
+  loading: Loading,
+})
+
 const Event = Loadable({
   loader: () => import('./pages/event' /* webpackChunkName: "event" */),
   loading: Loading,
@@ -58,9 +63,19 @@ const Root = () => {
               />
 
               <Route
-                path="/event/:id"
+                exact
+                path="/wallet"
                 render={() => (
                   <appContext.Provider key={1} value={dispatch}>
+                    <Wallet store={state} />
+                  </appContext.Provider>
+                )}
+              />
+
+              <Route
+                path="/event/:id"
+                render={() => (
+                  <appContext.Provider key={2} value={dispatch}>
                     <Event store={state} />
                   </appContext.Provider>
                 )}

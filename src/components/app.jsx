@@ -29,9 +29,11 @@ const App = props => {
                 {store.subMenu}
               </Title>
             </Col>
-            <appContext.Provider value={dispatch}>
-              <Nav store={store} />
-            </appContext.Provider>
+            {store.authState === 1 ? (
+              <appContext.Provider value={dispatch}>
+                <Nav store={store} />
+              </appContext.Provider>
+            ) : null}
           </Row>
           <Divider style={{marginTop: '0px'}} />
           {children}
