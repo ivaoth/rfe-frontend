@@ -28,7 +28,6 @@ const Wallet = props => {
         try {
           const out = await Axios.get(`${store.apiEndpoint}/api/v1/flight/reserved/${store.identity.vid}`)
 
-          console.log(out.data)
           setRaw(out.data.response.data.flights)
           setAsyncInProgress(false)
           setIsLoading(false)
