@@ -67,7 +67,7 @@ const Strip = props => {
 
       await Axios.post(`${store.apiEndpoint}/api/v1/flight/reserve`, payload)
 
-      message.success('Flight booked and added to your ticket')
+      message.success('Flight booked and added to your wallet')
       fetchFlight()
       setShowModal(false)
       setIsBooking(false)

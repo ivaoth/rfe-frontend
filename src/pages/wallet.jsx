@@ -20,7 +20,7 @@ const Wallet = props => {
 
   useEffect(() => {
     ;(async () => {
-      dispatch({type: 'setSubMenu', subMenu: 'tickets'})
+      dispatch({type: 'setSubMenu', subMenu: 'wallet'})
 
       if (raw === null && asyncInProgress !== true) {
         setAsyncInProgress(true)
