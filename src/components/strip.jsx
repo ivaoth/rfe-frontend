@@ -75,6 +75,8 @@ const Strip = props => {
     } catch (err) {
       if (err.response.data.code === 701) {
         message.warning('You already reserved flight for this event')
+      } else if (err.response.data.code === 706) {
+        message.warning('Someone already reserved this flight')
       } else {
         message.error('Unable to reserve this flight')
       }
