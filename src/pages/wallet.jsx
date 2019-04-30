@@ -101,14 +101,14 @@ const Wallet = props => {
                             onClick={() => modalCancel(item)}>
                             cancel
                           </Text>,
-                          <a key={`${item.event.id}-${item.flight.id}-button-more`} disabled>
+                          <Text key={`${item.event.id}-${item.flight.id}-button-more`} disabled>
                             more
-                          </a>,
+                          </Text>,
                         ]
                       : [
-                          <a key={`${item.event.id}-${item.flight.id}-button-more`} disabled>
+                          <Text key={`${item.event.id}-${item.flight.id}-button-more`} disabled>
                             more
-                          </a>,
+                          </Text>,
                         ]
                   }>
                   <List.Item.Meta title={item.flight.flight} description={item.event.name} />
