@@ -134,7 +134,7 @@ const Strip = props => {
                   <Text strong>Aircraft</Text>
                 </Col>
                 <Col span={13}>
-                  <Text>{raw.type}</Text>
+                  <Text>{raw.aircraft}</Text>
                 </Col>
               </Row>
               <Row key={`${flightID}-meta-departure`}>
@@ -193,7 +193,7 @@ const Strip = props => {
                       </Row>
                       <Row>
                         <Col span={24}>
-                          <Text strong>Aircraft</Text> {raw.type}
+                          <Text strong>Aircraft</Text> {raw.aircraft}
                         </Col>
                       </Row>
                       <Row>

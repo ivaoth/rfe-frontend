@@ -183,7 +183,7 @@ const Wallet = props => {
                           </Row>
                           <Row>
                             <Col span={24}>
-                              <Text strong>Aircraft</Text> {modalRaw.flight.type}
+                              <Text strong>Aircraft</Text> {modalRaw.flight.aircraft}
                             </Col>
                           </Row>
                           <Row>
