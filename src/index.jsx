@@ -26,6 +26,11 @@ const Event = Loadable({
   loading: Loading,
 })
 
+const Logout = Loadable({
+  loader: () => import('./pages/logout' /* webpackChunkName: "logout" */),
+  loading: Loading,
+})
+
 const NotFound = Loadable({
   loader: () => import('./pages/404' /* webpackChunkName: "notfound" */),
   loading: Loading,
@@ -77,6 +82,16 @@ const Root = () => {
                 render={() => (
                   <appContext.Provider key={2} value={dispatch}>
                     <Event store={state} />
+                  </appContext.Provider>
+                )}
+              />
+
+              <Route
+                exact
+                path="/logout"
+                render={() => (
+                  <appContext.Provider key={2} value={dispatch}>
+                    <Logout store={state} />
                   </appContext.Provider>
                 )}
               />

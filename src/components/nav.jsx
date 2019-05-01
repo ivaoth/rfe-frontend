@@ -21,6 +21,10 @@ const Nav = props => {
       name: 'Wallet',
       url: '/wallet',
     },
+    {
+      name: 'Logout',
+      url: '/logout',
+    },
   ]
 
   const toggleMenu = () => {
