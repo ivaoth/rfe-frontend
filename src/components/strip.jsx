@@ -179,7 +179,10 @@ const Strip = props => {
                       <Title level={4}>{raw.flight}</Title>
                       <Row>
                         <Col span={24}>
-                          {raw.airport.departure} (NaN) <Icon type="right" /> {raw.airport.arrival} (NaN)
+                          {raw.airport.departure}{' '}
+                          {raw.bay !== null && raw.bay.departure !== null ? `(${raw.bay.departure})` : null}{' '}
+                          <Icon type="right" /> {raw.airport.arrival}{' '}
+                          {raw.bay !== null && raw.bay.arrival !== null ? `(${raw.bay.arrival})` : null}
                         </Col>
                       </Row>
                       <Divider />
