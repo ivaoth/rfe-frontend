@@ -26,8 +26,8 @@ const Auth = props => {
         const time = moment()
         ls('token', token)
         ls('tokenTime', time)
-        dispatch({type: 'setToken', token})
-        dispatch({type: 'setTokenTime', time})
+        dispatch({type: 'setToken', token: token})
+        dispatch({type: 'setTokenTime', tokenTime: time})
       }
 
       if (store.token === null) {
