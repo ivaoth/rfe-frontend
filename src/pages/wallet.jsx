@@ -139,6 +139,7 @@ const Wallet = props => {
               title={modalRaw === null ? `Loading` : `Flight information for ${modalRaw.flight.flight}`}
               visible={showModal}
               width={700}
+              onCancel={() => setShowModal(false)}
               onOk={() => setShowModal(false)}>
               {modalRaw === null ? (
                 <Loading />
