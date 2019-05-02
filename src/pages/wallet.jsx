@@ -4,7 +4,9 @@ import PropTypes from 'prop-types'
 
 import {Axios, appContext, Loading} from '../bridge'
 
-import {Row, Col, Typography, List, Modal, message, Card, Icon, Divider} from 'antd'
+import FlightCard from '../components/flightcard'
+
+import {Row, Col, Typography, List, Modal, message, Card} from 'antd'
 
 const {Title, Text} = Typography
 const {Meta} = Card
@@ -66,11 +68,14 @@ const Wallet = props => {
 
           await Axios.post(`${store.apiEndpoint}/api/v1/flight/cancel`, payload)
 
-          setRaw(prev => _.filter(raw, o => o.event.id !== item.event.id && o.flight.id !== item.flight.id))
+          setRaw(prev =>
+            _.filter(prev, o => {
+              return o.event.id === item.event.id && o.flight.id === item.flight.id
+            }),
+          )
 
           message.success('Flight canceled')
         } catch (e) {
-          console.log(e.response.data)
           message.error('Unable to cancel this flight')
         }
       },
@@ -161,52 +166,7 @@ const Wallet = props => {
                         <Title level={3}>Flight</Title>
                       </Row>
                       <Row style={{margin: '10px 0'}}>
-                        <Card span={24}>
-                          <Title level={4}>{modalRaw.flight.flight}</Title>
-                          <Row>
-                            <Col span={24}>
-                              {modalRaw.flight.airport.departure}{' '}
-                              {modalRaw.flight.bay !== null && modalRaw.flight.bay.departure !== null
-                                ? `(${modalRaw.flight.bay.departure})`
-                                : null}{' '}
-                              <Icon type="right" /> {modalRaw.flight.airport.arrival}{' '}
-                              {modalRaw.flight.bay !== null && modalRaw.flight.bay.arrival !== null
-                                ? `(${modalRaw.flight.bay.arrival})`
-                                : null}
-                            </Col>
-                          </Row>
-                          <Divider />
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>Airline ICAO</Text> {modalRaw.flight.airline.code}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>Aircraft</Text> {modalRaw.flight.aircraft}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>Departure time</Text> {modalRaw.flight.time.departure}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>EST. arrival time</Text> {modalRaw.flight.time.arrival}
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>Distance</Text> {modalRaw.flight.distance} nm
-                            </Col>
-                          </Row>
-                          <Row>
-                            <Col span={24}>
-                              <Text strong>Route</Text> {modalRaw.route.route}
-                            </Col>
-                          </Row>
-                        </Card>
+                        <FlightCard flight={modalRaw.flight} route={modalRaw.route} />
                       </Row>
                     </Col>
                   </Row>
