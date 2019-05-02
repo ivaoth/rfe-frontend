@@ -1,0 +1,12 @@
+{
+  "extends": [
+    "config:base"
+  ],
+  "lockFileMaintenance": {
+    "enabled": true,
+    "schedule": "after 5pm before 10pm on Friday, Saturday, Sunday"
+  },
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 0,
+  "rebaseStalePrs": true
+}
