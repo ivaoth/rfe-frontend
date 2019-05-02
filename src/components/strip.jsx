@@ -3,7 +3,9 @@ import PropTypes from 'prop-types'
 
 import {Axios, Loading} from '../bridge'
 
-import {Row, Col, Card, Typography, Icon, Button, Modal, message, Divider} from 'antd'
+import FlightCard from '../components/flightcard'
+
+import {Row, Col, Card, Typography, Icon, Button, Modal, message, Checkbox, Tooltip} from 'antd'
 
 const {Title, Text} = Typography
 
@@ -14,6 +16,9 @@ const Strip = props => {
   const [showModal, setShowModal] = useState(false)
   const [isModalLoading, setIsModalLoading] = useState(true)
   const [isBooking, setIsBooking] = useState(false)
+
+  const [returnCheck, setReturnCheck] = useState(false)
+  const [returnRaw, setReturnRaw] = useState({flight: null, route: null})
 
   const {store} = props
 
@@ -32,7 +37,6 @@ const Strip = props => {
       setError(false)
       setIsLoading(false)
     } catch (err) {
-      console.log(err)
       setError(true)
       setIsLoading(false)
     }
@@ -45,6 +49,27 @@ const Strip = props => {
 
     setRaw(prev => ({...prev, route: out.data.response.data.route}))
     setIsModalLoading(false)
+  }
+
+  const toggleReturn = async () => {
+    const newReturnState = !returnCheck
+    setReturnCheck(newReturnState)
+
+    if (returnRaw.flight === null && returnRaw.route === null && newReturnState === true) {
+      try {
+        Axios.get(`${store.apiEndpoint}/api/v1/flight/get/${eventID}/${raw.related.id}`).then(out => {
+          const flight = out.data.response.data.flight
+
+          Axios.get(`${store.apiEndpoint}/api/v1/route/get/${flight.airport.departure}/${flight.airport.arrival}`).then(
+            out => {
+              setReturnRaw(prev => ({...prev, flight: flight, route: out.data.response.data.route}))
+            },
+          )
+        })
+      } catch {
+        message.error('Unable to fetch return flight')
+      }
+    }
   }
 
   const bookflight = async token => {
@@ -63,11 +88,17 @@ const Strip = props => {
             token: token,
           },
         },
+        withRelated: returnCheck,
       }
 
-      await Axios.post(`${store.apiEndpoint}/api/v1/flight/reserve`, payload)
+      const out = await Axios.post(`${store.apiEndpoint}/api/v1/flight/reserve`, payload)
 
       message.success('Flight reserved')
+
+      if (out.data.code === 202) {
+        message.warning('Someone already reserved return flight')
+      }
+
       message.info('New flight added to your wallet')
       fetchFlight()
       setShowModal(false)
@@ -114,7 +145,12 @@ const Strip = props => {
           <>
             <Row style={{marginBottom: '10px'}} key={`${flightID}-title`}>
               <Title level={3} style={{marginBottom: 0}}>
-                {raw.flight}
+                {raw.flight}{' '}
+                {raw.related.id === null ? null : (
+                  <Tooltip title="Returning flight is available">
+                    <Icon type="swap" />
+                  </Tooltip>
+                )}
               </Title>
               <Text type="secondary">{raw.airline.name}</Text>
             </Row>
@@ -166,6 +202,7 @@ const Strip = props => {
               visible={showModal}
               confirmLoading={isBooking}
               onOk={() => bookflight(store.token)}
+              okText={`Reserve`}
               onCancel={() => setShowModal(false)}>
               {isModalLoading ? (
                 <Loading />
@@ -175,52 +212,31 @@ const Strip = props => {
                     <Col span={24}>You are going to reserve the following flight.</Col>
                   </Row>
                   <Row style={{margin: '10px 0'}}>
-                    <Card span={24}>
-                      <Title level={4}>{raw.flight}</Title>
-                      <Row>
-                        <Col span={24}>
-                          {raw.airport.departure}{' '}
-                          {raw.bay !== null && raw.bay.departure !== null ? `(${raw.bay.departure})` : null}{' '}
-                          <Icon type="right" /> {raw.airport.arrival}{' '}
-                          {raw.bay !== null && raw.bay.arrival !== null ? `(${raw.bay.arrival})` : null}
-                        </Col>
-                      </Row>
-                      <Divider />
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>Airline ICAO</Text> {raw.airline.code}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>Aircraft</Text> {raw.aircraft}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>Departure time</Text> {raw.time.departure}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>EST. arrival time</Text> {raw.time.arrival}
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>Distance</Text> {raw.distance} nm
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col span={24}>
-                          <Text strong>Route</Text> {raw.route.route}
-                        </Col>
-                      </Row>
-                    </Card>
+                    <FlightCard flight={raw} route={raw.route} />
                   </Row>
-                  <Row>
-                    <Col span={24}>Click OK to proceed</Col>
-                  </Row>
+                  {raw.related.id === null ? null : (
+                    <>
+                      <Row>
+                        <Text>Returning flight is available!</Text>
+                      </Row>
+                      <Row>
+                        <Checkbox checked={returnCheck} onChange={() => toggleReturn()}>
+                          I also want to reserve returning flight
+                        </Checkbox>
+                      </Row>
+                      {returnCheck ? (
+                        <Row style={{margin: '10px 0'}}>
+                          {returnRaw.flight === null && returnRaw.route === null ? (
+                            <Card span={24}>
+                              <Loading />
+                            </Card>
+                          ) : (
+                            <FlightCard flight={returnRaw.flight} route={returnRaw.route} />
+                          )}
+                        </Row>
+                      ) : null}
+                    </>
+                  )}
                 </>
               )}
             </Modal>
