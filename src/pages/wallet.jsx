@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import React, {useState, useContext, useEffect} from 'react'
 import PropTypes from 'prop-types'
 
@@ -68,11 +67,15 @@ const Wallet = props => {
 
           await Axios.post(`${store.apiEndpoint}/api/v1/flight/cancel`, payload)
 
-          setRaw(prev =>
-            _.filter(prev, o => {
-              return o.event.id === item.event.id && o.flight.id === item.flight.id
-            }),
-          )
+          const newRaw = []
+          raw.map(o => {
+            if (o.event.id === item.event.id && o.flight.id === item.flight.id) {
+            } else {
+              newRaw.push(o)
+            }
+          })
+
+          setRaw(newRaw)
 
           message.success('Flight canceled')
         } catch (e) {
