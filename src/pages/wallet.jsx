@@ -69,10 +69,7 @@ const Wallet = props => {
 
           const newRaw = []
           raw.map(o => {
-            if (o.event.id === item.event.id && o.flight.id === item.flight.id) {
-            } else {
-              newRaw.push(o)
-            }
+            return o.event.id === item.event.id && o.flight.id === item.flight.id ? null : newRaw.push(o)
           })
 
           setRaw(newRaw)
