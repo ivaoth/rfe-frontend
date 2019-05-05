@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 
 import {Axios, appContext, Loading} from '../bridge'
 
+import EventCard from '../components/eventcard'
 import FlightCard from '../components/flightcard'
 
-import {Row, Col, Typography, List, Modal, message, Card} from 'antd'
+import {Row, Col, Typography, List, Modal, message} from 'antd'
 
 const {Title, Text} = Typography
-const {Meta} = Card
 
 const Wallet = props => {
   const [raw, setRaw] = useState(null)
@@ -111,7 +111,7 @@ const Wallet = props => {
               renderItem={item => (
                 <List.Item
                   actions={
-                    item.event.isOpen
+                    item.event.isOpen === true
                       ? [
                           <Text
                             key={`${item.event.id}-${item.flight.id}-button-cancel`}
@@ -156,9 +156,7 @@ const Wallet = props => {
                         <Title level={3}>Event</Title>
                       </Row>
                       <Row style={{margin: '10px 0'}}>
-                        <Card cover={<img alt={modalRaw.event.name} src={modalRaw.event.cover} />}>
-                          <Meta title={modalRaw.event.name} description={modalRaw.event.desc} />
-                        </Card>
+                        <EventCard event={modalRaw.event} />
                       </Row>
                     </Col>
                     <Col xs={{span: 24}} md={{span: 14}}>

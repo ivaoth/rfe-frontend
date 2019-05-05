@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 
 import {Axios, Loading, Link, appContext} from '../bridge'
 
-import {Row, Col, Card, Typography, Empty} from 'antd'
+import EventCard from '../components/eventcard'
+
+import {Row, Col, Typography, Empty} from 'antd'
 
 const {Title, Text} = Typography
-const {Meta} = Card
 
 const Home = props => {
   const [raw, setRaw] = useState([])
@@ -21,16 +22,18 @@ const Home = props => {
     ;(async () => {
       dispatch({type: 'setSubMenu', subMenu: 'events'})
 
-      try {
-        const out = await Axios.get(`${store.apiEndpoint}/api/v1/event/list`)
-        setRaw(out.data.response.data.events)
-        setIsLoading(false)
-      } catch {
-        setError(true)
-        setIsLoading(false)
+      if (isLoading === true && error === false) {
+        try {
+          const out = await Axios.get(`${store.apiEndpoint}/api/v1/event/list`)
+          setRaw(out.data.response.data.events)
+          setIsLoading(false)
+        } catch {
+          setError(true)
+          setIsLoading(false)
+        }
       }
     })()
-  }, [dispatch, store.apiEndpoint])
+  }, [dispatch, error, isLoading, store])
 
   return (
     <>
@@ -50,9 +53,7 @@ const Home = props => {
                   {raw.map(event => (
                     <Col xs={{span: 24}} sm={{span: 12}} md={{span: 8}} lg={{span: 6}} key={`card-event-${event.id}`}>
                       <Link to={`/event/${event.id}`}>
-                        <Card cover={<img alt={event.name} src={event.cover} />}>
-                          <Meta title={event.name} description={event.desc} />
-                        </Card>
+                        <EventCard event={event} />
                       </Link>
                     </Col>
                   ))}
