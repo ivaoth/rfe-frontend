@@ -3,7 +3,7 @@ import ls from 'local-storage'
 export const initState = {
   toggleMenu: false,
   subMenu: 'initializing',
-  apiEndpoint: 'http://localhost:3001',
+  apiEndpoint: 'https://rfe.th.ivao.aero',
   identity: null,
   token: ls('token'),
   tokenTime: ls('tokenTime'),
