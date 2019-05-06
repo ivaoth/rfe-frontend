@@ -26,7 +26,6 @@ const Home = props => {
       if (isLoading === true && error === false && asyncInProgress !== true) {
         setAsyncInProgress(true)
         try {
-          console.log(`fetch`)
           const out = await Axios.get(`${store.apiEndpoint}/api/v1/event/list`)
           setRaw(out.data.response.data.events)
           setAsyncInProgress(false)
