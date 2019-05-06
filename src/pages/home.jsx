@@ -1,7 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import PropTypes from 'prop-types'
 
-import {Axios, Loading, Link, appContext} from '../bridge'
+import {Axios, Loading, appContext} from '../bridge'
 
 import EventCard from '../components/eventcard'
 
@@ -57,9 +57,7 @@ const Home = props => {
                 <>
                   {raw.map(event => (
                     <Col xs={{span: 24}} sm={{span: 12}} md={{span: 8}} lg={{span: 6}} key={`card-event-${event.id}`}>
-                      <Link to={`/event/${event.id}`}>
-                        <EventCard event={event} />
-                      </Link>
+                      <EventCard event={event} link />
                     </Col>
                   ))}
                 </>
