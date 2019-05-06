@@ -12,6 +12,7 @@ const {Title, Text} = Typography
 const Home = props => {
   const [raw, setRaw] = useState([])
   const [error, setError] = useState(false)
+  const [asyncInProgress, setAsyncInProgress] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   const {store} = props
@@ -22,18 +23,22 @@ const Home = props => {
     ;(async () => {
       dispatch({type: 'setSubMenu', subMenu: 'events'})
 
-      if (isLoading === true && error === false) {
+      if (isLoading === true && error === false && asyncInProgress !== true) {
+        setAsyncInProgress(true)
         try {
+          console.log(`fetch`)
           const out = await Axios.get(`${store.apiEndpoint}/api/v1/event/list`)
           setRaw(out.data.response.data.events)
+          setAsyncInProgress(false)
           setIsLoading(false)
         } catch {
           setError(true)
+          setAsyncInProgress(false)
           setIsLoading(false)
         }
       }
     })()
-  }, [dispatch, error, isLoading, store])
+  }, [asyncInProgress, dispatch, error, isLoading, store])
 
   return (
     <>

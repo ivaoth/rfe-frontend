@@ -247,7 +247,11 @@ const Strip = props => {
   )
 }
 
-export default Strip
+const willUpdate = (prevProps, nextProps) => {
+  return nextProps.eventID !== prevProps.eventID || nextProps.flightID !== prevProps.flightID
+}
+
+export default React.memo(Strip, willUpdate)
 
 Strip.propTypes = {
   store: PropTypes.object,
